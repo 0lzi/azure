@@ -11,4 +11,5 @@
     ansible.builtin.apt:
       package:
         - apache2
+      update_cache: true
       state: present
