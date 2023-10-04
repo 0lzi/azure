@@ -1,0 +1,13 @@
+---
+- name: Destroy Infra
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: Destroy
+      azure.azcollection.azure_rm_resourcegroup:
+        name: myResourceGroup
+        location: UK West
+        state: absent
+        force_delete_nonempty: true

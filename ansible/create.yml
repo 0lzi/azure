@@ -1,0 +1,59 @@
+---
+- name: Create Infra
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+
+    - name: Create a resource group
+      azure.azcollection.azure_rm_resourcegroup:
+        name: myResourceGroup
+        location: UK West
+
+    - name: Create vnet
+      azure.azcollection.azure_rm_virtualnetwork:
+        name: vnet1
+        resource_group: myResourceGroup
+        address_prefixes_cidr:
+          - 10.1.0.0/16
+
+    - name: Create subnet
+      azure.azcollection.azure_rm_subnet:
+        virtual_network_name: vnet1
+        name: subnet1
+        resource_group: myResourceGroup
+        address_prefixes_cidr: "10.1.0.0/24"
+
+    - name: Create VM1
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: myResourceGroup
+        name: prodvm1
+        admin_username: "{{ username }}"
+        admin_password: "{{ password }}"
+        managed_disk_type: Standard_LRS
+        os_disk_size_gb: 30
+        image:
+          offer: 0001-com-ubuntu-server-focal
+          publisher: canonical
+          sku: 20_04-lts-gen2
+          version: latest
+        vm_size: Standard_B1s
+        tags:
+          env: prod
+
+    - name: Create VM2
+      azure.azcollection.azure_rm_virtualmachine:
+        resource_group: myResourceGroup
+        name: devvm1
+        admin_username: "{{ username }}"
+        admin_password: "{{ password }}"
+        managed_disk_type: Standard_LRS
+        os_disk_size_gb: 30
+        image:
+          offer: 0001-com-ubuntu-server-focal
+          publisher: canonical
+          sku: 20_04-lts-gen2
+          version: latest
+        vm_size: Standard_B1s
+        tags:
+          env: dev
